@@ -21,6 +21,7 @@ const hbs = handlebars.create({
     }
 });
 
+app.use(express.static('public'));
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', './views');
@@ -31,24 +32,19 @@ app.get('/', (req, res) => {
     term = ""
     if (req.query.term) {
         term = req.query.term
-    }
-    // Tenor.search.Query("SEARCH KEYWORD HERE", "LIMIT HERE")
-    Tenor.Search.Query(term, "10")
+        // Tenor.search.Query("SEARCH KEYWORD HERE", "LIMIT HERE")
+        Tenor.Search.Query(term, "10")
         .then(response => {
-            // store the gifs we get back from the search
-            const gifs = response;
-            // pass the gifs as an object into the home page
-            res.render('home', { gifs })
+          // store the gifs we get back from the search
+          const gifs = response;
+          // pass the gifs as an object into the home page
+          res.render('home', { gifs })
         }).catch(console.error);
-  })
-
-  app.get('/greetings/:name', (req, res) => {
-    // grab the name from the path provided
-    const name = req.params.name;
-    // render the greetings view, passing along the name
-    res.render('greetings', { name });
-  })
-
+      }
+      else {
+        res.render('home', { gifs: [] })
+      }
+  });
 // Start Server
 
 app.listen(3000, () => {
